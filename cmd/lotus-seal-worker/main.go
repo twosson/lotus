@@ -422,7 +422,7 @@ var runCmd = &cli.Command{
 			log.Warn("Graceful shutdown successful")
 		}()
 
-		nl, err := net.Listen("tcp", address)
+		nl, err := net.Listen("tcp", "0.0.0.0:"+addressSlice[1])
 		if err != nil {
 			return err
 		}
