@@ -356,7 +356,7 @@ var runCmd = &cli.Command{
 			}
 		}
 
-		localStore, err := stores.NewLocal(ctx, lr, nodeApi, []string{"http://" + address + "/remote"})
+		localStore, err := stores.NewLocal(ctx, lr, nodeApi, []string{"http://" + proxy + "/remote"})
 		if err != nil {
 			return err
 		}
