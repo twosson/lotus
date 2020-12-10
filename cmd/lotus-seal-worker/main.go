@@ -113,8 +113,9 @@ var runCmd = &cli.Command{
 			Hidden: true,
 		},
 		&cli.StringFlag{
-			Name:   "proxy",
-			Hidden: true,
+			Name:  "proxy",
+			Usage: "proxy address and port the worker api will listen on",
+			Value: "0.0.0.0:30000",
 		},
 		&cli.BoolFlag{
 			Name:  "no-local-storage",
