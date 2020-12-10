@@ -112,6 +112,11 @@ var runCmd = &cli.Command{
 			Name:   "address",
 			Hidden: true,
 		},
+		&cli.StringFlag{
+			Name:  "proxy",
+			Usage: "proxy address and port the worker api will listen on",
+			Value: "0.0.0.0:3456",
+		},
 		&cli.BoolFlag{
 			Name:  "no-local-storage",
 			Usage: "don't use storageminer repo for sector storage",
@@ -335,6 +340,7 @@ var runCmd = &cli.Command{
 		log.Info("Opening local storage; connecting to master")
 		const unspecifiedAddress = "0.0.0.0"
 		address := cctx.String("listen")
+		proxy := cctx.String("proxy")
 		addressSlice := strings.Split(address, ":")
 		if ip := net.ParseIP(addressSlice[0]); ip != nil {
 			if ip.String() == unspecifiedAddress {
@@ -350,7 +356,7 @@ var runCmd = &cli.Command{
 			}
 		}
 
-		localStore, err := stores.NewLocal(ctx, lr, nodeApi, []string{"http://" + address + "/remote"})
+		localStore, err := stores.NewLocal(ctx, lr, nodeApi, []string{"http://" + proxy + "/remote"})
 		if err != nil {
 			return err
 		}
@@ -509,7 +515,7 @@ var runCmd = &cli.Command{
 
 					select {
 					case <-readyCh:
-						if err := nodeApi.WorkerConnect(ctx, "http://"+address+"/rpc/v0"); err != nil {
+						if err := nodeApi.WorkerConnect(ctx, "http://"+proxy+"/rpc/v0"); err != nil {
 							log.Errorf("Registering worker failed: %+v", err)
 							cancel()
 							return
