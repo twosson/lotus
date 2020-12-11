@@ -495,6 +495,10 @@ func (l *LocalWorker) Info(context.Context) (storiface.WorkerInfo, error) {
 		log.Errorf("getting gpu devices failed: %+v", err)
 	}
 
+	for i, gpu := range gpus {
+		gpus[i] = "Filkeep " + gpu
+	}
+
 	h, err := sysinfo.Host()
 	if err != nil {
 		return storiface.WorkerInfo{}, xerrors.Errorf("getting host info: %w", err)
