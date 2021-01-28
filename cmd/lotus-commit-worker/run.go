@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/filecoin-project/go-jsonrpc"
 	"github.com/filecoin-project/go-jsonrpc/auth"
+	paramfetch "github.com/filecoin-project/go-paramfetch"
 	"github.com/filecoin-project/go-statestore"
 	"github.com/filecoin-project/lotus/api"
 	"github.com/filecoin-project/lotus/api/apistruct"
@@ -83,19 +84,19 @@ var runCmd = &cli.Command{
 		}
 
 		// Check params
-		//act, err := nodeApi.ActorAddress(ctx)
-		//if err != nil {
-		//	return err
-		//}
-		//
-		//ssize, err := nodeApi.ActorSectorSize(ctx, act)
-		//if err != nil {
-		//	return err
-		//}
-		//
-		//if err := paramfetch.GetParams(ctx, build.ParametersJSON(), uint64(ssize)); err != nil {
-		//	return xerrors.Errorf("get params: %w", err)
-		//}
+		act, err := nodeApi.ActorAddress(ctx)
+		if err != nil {
+			return err
+		}
+
+		ssize, err := nodeApi.ActorSectorSize(ctx, act)
+		if err != nil {
+			return err
+		}
+
+		if err := paramfetch.GetParams(ctx, build.ParametersJSON(), uint64(ssize)); err != nil {
+			return xerrors.Errorf("get params: %w", err)
+		}
 
 		// Open repo
 		repoPath := cctx.String(FlagWorkerRepo)

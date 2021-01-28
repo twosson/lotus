@@ -7,10 +7,10 @@ require (
 	github.com/codeskyblue/go-sh v0.0.0-20200712050446-30169cf553fe
 	github.com/davecgh/go-spew v1.1.1
 	github.com/drand/drand v1.2.1
-	github.com/filecoin-project/go-address v0.0.5-0.20201103152444-f2023ef3f5bb
+	github.com/filecoin-project/go-address v0.0.5
 	github.com/filecoin-project/go-fil-markets v1.1.2
 	github.com/filecoin-project/go-jsonrpc v0.1.2
-	github.com/filecoin-project/go-state-types v0.0.0-20201102161440-c8033295a1fc
+	github.com/filecoin-project/go-state-types v0.0.0-20210119062722-4adba5aaea71
 	github.com/filecoin-project/go-storedcounter v0.0.0-20200421200003-1c99c62e8a5b
 	github.com/filecoin-project/lotus v0.9.2-0.20201012041700-a2e0832a12f2
 	github.com/filecoin-project/oni/lotus-soup v0.0.0-20201016183302-a8430088b2b8
@@ -34,7 +34,7 @@ require (
 	github.com/multiformats/go-multiaddr-net v0.2.0
 	github.com/testground/sdk-go v0.2.6-0.20201016180515-1e40e1b0ec3a
 	go.opencensus.io v0.22.5
-	golang.org/x/sync v0.0.0-20201020160332-67f06af15bc9
+	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a
 )
 
 // This will work in all build modes: docker:go, exec:go, and local go build.
