@@ -45,6 +45,7 @@ func newWorker(nodeApi api.StorageMiner, commitApi CommitApi, listen string, gpu
 }
 
 func (w *worker) SealCommit2(ctx context.Context, sector storage.SectorRef, c1o storage.Commit1Out) (storiface.CallID, error) {
+	log.Infof("Received sector %d for miner %d", sector.ID.Number, sector.ID.Miner)
 	if w.running {
 		return storiface.UndefCall, xerrors.Errorf("%s 扇区正在执行任务，请等待 %s 扇区执行完成，在调度任务。", w.job.Sector.Number, w.job.Sector.Number)
 	}
@@ -72,7 +73,7 @@ func (w *worker) SealCommit2(ctx context.Context, sector storage.SectorRef, c1o 
 		w.running = false
 		return storiface.UndefCall, xerrors.Errorf("%s 扇区执行任务时异常， 请联系 Filkeep 客服. ")
 	}
-
+	log.Infof("Create ffi sector %d form miner %d", sector.ID.Number, sector.ID.Miner)
 	return w.job, nil
 }
 

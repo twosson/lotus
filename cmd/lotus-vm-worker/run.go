@@ -25,34 +25,40 @@ var runCmd = &cli.Command{
 	Usage: "Start lotus vm worker",
 	Flags: []cli.Flag{
 		&cli.StringFlag{
-			Name:  "listen",
-			Usage: "host address and port the worker api will listen on",
-			Value: "0.0.0.0:5685",
+			Name:    "listen",
+			Usage:   "host address and port the worker api will listen on",
+			Value:   "0.0.0.0:5685",
+			EnvVars: []string{"LISTEN"},
 		},
 		&cli.StringFlag{
-			Name:  "maddr",
-			Usage: "set commit manager address",
-			Value: "0.0.0.0:5685",
+			Name:    "maddr",
+			Usage:   "set commit manager address",
+			Value:   "0.0.0.0:5685",
+			EnvVars: []string{"MADDR"},
 		},
 		&cli.StringFlag{
-			Name:  "proxy",
-			Usage: "proxy address and port the worker api will listen on",
-			Value: "218.17.24.91:5685",
+			Name:    "proxy",
+			Usage:   "proxy address and port the worker api will listen on",
+			Value:   "218.17.24.91:5685",
+			EnvVars: []string{"PROXY"},
 		},
 		&cli.StringFlag{
-			Name:  "gpumodel",
-			Usage: "set gpu model",
-			Value: "RTX 3090",
+			Name:    "gpumodel",
+			Usage:   "set gpu model",
+			Value:   "RTX 3090",
+			EnvVars: []string{"GPU_MODEL"},
 		},
 		&cli.StringFlag{
-			Name:  "cpumodel",
-			Usage: "set cpu model",
-			Value: "Inter",
+			Name:    "cpumodel",
+			Usage:   "set cpu model",
+			Value:   "Inter",
+			EnvVars: []string{"CPU_MODEL"},
 		},
 		&cli.StringFlag{
-			Name:  "hostname",
-			Usage: "set hostname",
-			Value: "filkeep-f010491-001",
+			Name:    "hostname",
+			Usage:   "set hostname",
+			Value:   "filkeep-f010491-001",
+			EnvVars: []string{"HOST_NAME"},
 		},
 	},
 	Action: func(cctx *cli.Context) error {
@@ -110,6 +116,7 @@ var runCmd = &cli.Command{
 		cpuModel := cctx.String("cpumodel")
 		hostname := cctx.String("hostname")
 		maddr := cctx.String("maddr")
+		maddr = "http://" + maddr + "/rpc/v0"
 		log.Infof("lotus vm worker proxy address: %s", proxy)
 
 		commitApi, commitCloser, err := NewCommitApiRpc(ctx, maddr)
