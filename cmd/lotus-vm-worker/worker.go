@@ -77,7 +77,14 @@ func (w *worker) SealCommit2(ctx context.Context, sector storage.SectorRef, c1o 
 	return w.job, nil
 }
 
-func (w *worker) ReturnSealCommit2(ctx context.Context, callID storiface.CallID, proof storage.Proof, callError *storiface.CallError) error {
+func (w *worker) GetCommit1(ctx context.Context, callID storiface.CallID) (storage.Commit1Out, error) {
+	if w.c1o == nil {
+		return nil, xerrors.Errorf("not found commit1 out")
+	}
+	return w.c1o, nil
+}
+
+func (w *worker) ReturnCommit2(ctx context.Context, callID storiface.CallID, proof storage.Proof, callError *storiface.CallError) error {
 	if callID.ID.String() != w.job.ID.String() {
 		return xerrors.Errorf("return commit2 proof error.")
 	}
