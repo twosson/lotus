@@ -88,6 +88,20 @@ lotus-worker: $(BUILD_DEPS)
 .PHONY: lotus-worker
 BINS+=lotus-worker
 
+lotus-vm: $(BUILD_DEPS)
+	rm -f lotus-vm
+	go build $(GOFLAGS) -o lotus-vm ./cmd/lotus-vm-worker -i ./build
+	go run github.com/GeertJohan/go.rice/rice append --exec lotus-vm -i ./build
+.PHONY: lotus-vm
+BINS+=lotus-vm
+
+lotus-ffi: $(BUILD_DEPS)
+	rm -f lotus-ffi
+	go build $(GOFLAGS) -o lotus-ffi ./cmd/lotus-ffi-worker -i ./build
+	go run github.com/GeertJohan/go.rice/rice append --exec lotus-ffi -i ./build
+.PHONY: lotus-ffi
+BINS+=lotus-ffi
+
 lotus-shed: $(BUILD_DEPS)
 	rm -f lotus-shed
 	go build $(GOFLAGS) -o lotus-shed ./cmd/lotus-shed
