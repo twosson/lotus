@@ -127,7 +127,7 @@ an existing lotus binary in your PATH. This may cause problems if you don't run 
 
 .PHONY: build
 
-install: install-daemon install-miner install-worker
+install: install-daemon install-miner install-worker lotus-vm lotus-ffi
 
 install-daemon:
 	install -C ./lotus /usr/local/bin/lotus
@@ -137,6 +137,12 @@ install-miner:
 
 install-worker:
 	install -C ./lotus-worker /usr/local/bin/lotus-worker
+
+lotus-vm:
+	install -C ./lotus-vm /usr/local/bin/lotus-vm
+
+lotus-ffi:
+	install -C ./lotus-ffi /usr/local/bin/lotus-ffi
 
 # TOOLS
 
