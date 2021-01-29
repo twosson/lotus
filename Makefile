@@ -95,8 +95,14 @@ lotus-vm: $(BUILD_DEPS)
 .PHONY: lotus-vm
 BINS+=lotus-vm
 
-lotus-ffi: $(BUILD_DEPS)
+lotus-ffi-K01CA3N3090: $(BUILD_DEPS)
 	rm -f lotus-ffi
+	rm -f extern/filecoin-ffi/filcrypto.h
+	rm -f extern/filecoin-ffi/filcrypto.pc
+	rm -f extern/filecoin-ffi/libfilcrypto.a
+	cp filcrypto/filcrypto.h extern/filecoin-ffi/
+	cp filcrypto/filcrypto.pc extern/filecoin-ffi/
+	cp filcrypto/libfilcrypto.a extern/filecoin-ffi/
 	go build $(GOFLAGS) -o lotus-ffi ./cmd/lotus-ffi-worker -i ./build
 	go run github.com/GeertJohan/go.rice/rice append --exec lotus-ffi -i ./build
 .PHONY: lotus-ffi
