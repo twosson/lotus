@@ -36,7 +36,7 @@ WORKDIR /opt/filecoin
 ARG RUSTFLAGS=""
 ARG GOFLAGS=""
 
-RUN make deps lotus lotus-miner lotus-worker lotus-shed lotus-chainwatch lotus-stats
+RUN make deps lotus lotus-miner lotus-worker lotus-shed lotus-chainwatch lotus-stats lotus-vm lotus-ffi
 
 
 FROM ubuntu:20.04 AS base
@@ -61,6 +61,8 @@ MAINTAINER Lotus Development Team
 
 COPY --from=builder /opt/filecoin/lotus      /usr/local/bin/
 COPY --from=builder /opt/filecoin/lotus-shed /usr/local/bin/
+COPY --from=builder /opt/filecoin/lotus-vm /usr/local/bin/
+COPY --from=builder /opt/filecoin/lotus-ffi /usr/local/bin/
 
 ENV FILECOIN_PARAMETER_CACHE /var/tmp/filecoin-proof-parameters
 ENV LOTUS_PATH /var/lib/lotus
