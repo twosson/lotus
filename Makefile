@@ -95,14 +95,14 @@ lotus-vm: $(BUILD_DEPS)
 .PHONY: lotus-vm
 BINS+=lotus-vm
 
-lotus-ffi-K01CA3N3090: $(BUILD_DEPS)
+lotus-ffi: $(BUILD_DEPS)
 	rm -f lotus-ffi
 	rm -f extern/filecoin-ffi/filcrypto.h
 	rm -f extern/filecoin-ffi/filcrypto.pc
 	rm -f extern/filecoin-ffi/libfilcrypto.a
-	cp filcrypto/filcrypto.h extern/filecoin-ffi/
-	cp filcrypto/filcrypto.pc extern/filecoin-ffi/
-	cp filcrypto/libfilcrypto.a extern/filecoin-ffi/
+	cp filcrypto/K01CA3N3090/filcrypto.h extern/filecoin-ffi/
+	cp filcrypto/K01CA3N3090/filcrypto.pc extern/filecoin-ffi/
+	cp filcrypto/K01CA3N3090/libfilcrypto.a extern/filecoin-ffi/
 	go build $(GOFLAGS) -o lotus-ffi ./cmd/lotus-ffi-worker -i ./build
 	go run github.com/GeertJohan/go.rice/rice append --exec lotus-ffi -i ./build
 .PHONY: lotus-ffi
@@ -127,7 +127,7 @@ an existing lotus binary in your PATH. This may cause problems if you don't run 
 
 .PHONY: build
 
-install: install-daemon install-miner install-worker lotus-vm lotus-ffi
+install: install-daemon install-miner install-worker install-vm install-ffi
 
 install-daemon:
 	install -C ./lotus /usr/local/bin/lotus
@@ -138,10 +138,10 @@ install-miner:
 install-worker:
 	install -C ./lotus-worker /usr/local/bin/lotus-worker
 
-lotus-vm:
+install-vm:
 	install -C ./lotus-vm /usr/local/bin/lotus-vm
 
-lotus-ffi:
+install-ffi:
 	install -C ./lotus-ffi /usr/local/bin/lotus-ffi
 
 # TOOLS
