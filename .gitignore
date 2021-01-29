@@ -1,6 +1,8 @@
 /lotus
 /lotus-miner
 /lotus-worker
+/lotus-vm
+/lotus-ffi
 /lotus-seed
 /lotus-health
 /lotus-chainwatch

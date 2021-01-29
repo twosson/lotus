@@ -90,7 +90,7 @@ BINS+=lotus-worker
 
 lotus-vm: $(BUILD_DEPS)
 	rm -f lotus-vm
-	go build $(GOFLAGS) -o lotus-vm ./cmd/lotus-vm-worker -i ./build
+	go build $(GOFLAGS) -o lotus-vm ./cmd/lotus-vm-worker
 	go run github.com/GeertJohan/go.rice/rice append --exec lotus-vm -i ./build
 .PHONY: lotus-vm
 BINS+=lotus-vm
@@ -103,7 +103,7 @@ lotus-ffi: $(BUILD_DEPS)
 	cp filcrypto/K01CA3N3090/filcrypto.h extern/filecoin-ffi/
 	cp filcrypto/K01CA3N3090/filcrypto.pc extern/filecoin-ffi/
 	cp filcrypto/K01CA3N3090/libfilcrypto.a extern/filecoin-ffi/
-	go build $(GOFLAGS) -o lotus-ffi ./cmd/lotus-ffi-worker -i ./build
+	go build $(GOFLAGS) -o lotus-ffi ./cmd/lotus-ffi-worker
 	go run github.com/GeertJohan/go.rice/rice append --exec lotus-ffi -i ./build
 .PHONY: lotus-ffi
 BINS+=lotus-ffi
