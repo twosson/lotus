@@ -48,6 +48,7 @@ var runCmd = &cli.Command{
 			return xerrors.Errorf("get params: %w", err)
 		}
 
+		log.Info("params completed")
 		handler, err := NewFFIWorkerHandler()
 		if err != nil {
 			return err
@@ -85,7 +86,7 @@ var runCmd = &cli.Command{
 		if err != nil {
 			return err
 		}
-
+		log.Info("lotus ffi started...")
 		return srv.Serve(nl)
 	},
 }
