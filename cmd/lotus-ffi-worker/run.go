@@ -48,16 +48,7 @@ var runCmd = &cli.Command{
 			return xerrors.Errorf("get params: %w", err)
 		}
 
-		vm, closer, err := NewVMWorkerRPC(context.Background(), "")
-		if err != nil {
-			if closer != nil {
-				closer()
-			}
-			return err
-		}
-		defer closer()
-
-		handler, err := NewFFIWorkerHandler(vm)
+		handler, err := NewFFIWorkerHandler()
 		if err != nil {
 			return err
 		}

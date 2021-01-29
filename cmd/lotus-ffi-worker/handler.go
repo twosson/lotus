@@ -10,15 +10,12 @@ import (
 	"golang.org/x/xerrors"
 )
 
-type ReturnType string
-
 type FFIWorkerHandler struct {
 	running bool
-	vm      VMWorkerAPI
 }
 
-func NewFFIWorkerHandler(vm VMWorkerAPI) (*FFIWorkerHandler, error) {
-	return &FFIWorkerHandler{vm: vm}, nil
+func NewFFIWorkerHandler() (*FFIWorkerHandler, error) {
+	return &FFIWorkerHandler{}, nil
 }
 
 func (h *FFIWorkerHandler) SealCommit2(ctx context.Context, req FFIRequest) (FFIResponse, error) {
@@ -37,15 +34,24 @@ func (h *FFIWorkerHandler) SealCommit2(ctx context.Context, req FFIRequest) (FFI
 		ProofType: req.ProofType,
 	}
 
+	vm, closer, err := NewVMWorkerRPC(context.Background(), req.WorkerAddress)
+	if err != nil {
+		if closer != nil {
+			closer()
+		}
+		return rsp, err
+	}
+
 	// 获取phase1Out
 	go func() {
+		defer closer()
 		id, err := uuid.Parse(req.CallID)
 		if err != nil {
 			errCall := &storiface.CallError{
 				Code:    1,
 				Message: "parse uuid error",
 			}
-			_ = h.vm.ReturnCommit2(ctx, storiface.UndefCall, nil, errCall)
+			_ = vm.ReturnCommit2(ctx, storiface.UndefCall, nil, errCall)
 		}
 		callId := storiface.CallID{
 			Sector: abi.SectorID{
@@ -54,13 +60,13 @@ func (h *FFIWorkerHandler) SealCommit2(ctx context.Context, req FFIRequest) (FFI
 			},
 			ID: id,
 		}
-		c1o, err := h.vm.GetCommit1(ctx, callId)
+		c1o, err := vm.GetCommit1(ctx, callId)
 		if err != nil {
 			errCall := &storiface.CallError{
 				Code:    1,
 				Message: "get commit1 out error",
 			}
-			_ = h.vm.ReturnCommit2(ctx, callId, nil, errCall)
+			_ = vm.ReturnCommit2(ctx, callId, nil, errCall)
 		}
 
 		result, err := ffi.SealCommitPhase2(c1o, sector.ID.Number, sector.ID.Miner)
@@ -70,13 +76,13 @@ func (h *FFIWorkerHandler) SealCommit2(ctx context.Context, req FFIRequest) (FFI
 				Code:    1,
 				Message: "ffi commit2 error",
 			}
-			_ = h.vm.ReturnCommit2(ctx, callId, nil, errCall)
+			_ = vm.ReturnCommit2(ctx, callId, nil, errCall)
 		} else {
 			errCall := &storiface.CallError{
 				Code:    0,
 				Message: "ffi commit2 success",
 			}
-			_ = h.vm.ReturnCommit2(ctx, callId, result, errCall)
+			_ = vm.ReturnCommit2(ctx, callId, result, errCall)
 		}
 	}()
 	return rsp, nil
