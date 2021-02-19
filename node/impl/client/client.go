@@ -711,6 +711,16 @@ func (a *API) ClientCalcCommP(ctx context.Context, inpath string) (*api.CommPRet
 		return nil, err
 	}
 
+	// check that the data is a car file; if it's not, retrieval won't work
+	_, _, err = car.ReadHeader(bufio.NewReader(rdr))
+	if err != nil {
+		return nil, xerrors.Errorf("not a car file: %w", err)
+	}
+
+	if _, err := rdr.Seek(0, io.SeekStart); err != nil {
+		return nil, xerrors.Errorf("seek to start: %w", err)
+	}
+
 	pieceReader, pieceSize := padreader.New(rdr, uint64(stat.Size()))
 	commP, err := ffiwrapper.GeneratePieceCIDFromFile(arbitraryProofType, pieceReader, pieceSize)
 
@@ -755,13 +765,7 @@ func (a *API) ClientDealPieceCID(ctx context.Context, root cid.Cid) (api.DataCID
 	w := &writer.Writer{}
 	bw := bufio.NewWriterSize(w, int(writer.CommPBuf))
 
-	// Calculate the raw block size so we can figure out the transfer percentage
-	// (the raw block size is the denominator)
-	var rawBlockSize uint64
-	err := car.WriteCarWithWalker(ctx, dag, []cid.Cid{root}, w, func(nd ipld.Node) ([]*ipld.Link, error) {
-		rawBlockSize += uint64(len(nd.RawData()))
-		return nd.Links(), nil
-	})
+	err := car.WriteCar(ctx, dag, []cid.Cid{root}, w)
 	if err != nil {
 		return api.DataCIDSize{}, err
 	}
@@ -771,12 +775,7 @@ func (a *API) ClientDealPieceCID(ctx context.Context, root cid.Cid) (api.DataCID
 	}
 
 	dataCIDSize, err := w.Sum()
-	return api.DataCIDSize{
-		RawBlockSize: rawBlockSize,
-		PayloadSize:  dataCIDSize.PayloadSize,
-		PieceSize:    dataCIDSize.PieceSize,
-		PieceCID:     dataCIDSize.PieceCID,
-	}, err
+	return api.DataCIDSize(dataCIDSize), err
 }
 
 func (a *API) ClientGenCar(ctx context.Context, ref api.FileRef, outputPath string) error {
