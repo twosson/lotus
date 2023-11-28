@@ -1,6 +1,7 @@
 package sealing
 
 import (
+	"github.com/ipfs/go-cid"
 	"time"
 
 	"golang.org/x/xerrors"
