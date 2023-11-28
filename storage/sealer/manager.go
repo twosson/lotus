@@ -3,6 +3,10 @@ package sealer
 import (
 	"context"
 	"errors"
+	"github.com/filecoin-project/go-statestore"
+	"github.com/hashicorp/go-multierror"
+	"github.com/ipfs/go-cid"
+	"github.com/mitchellh/go-homedir"
 	"io"
 	"net/http"
 	"sort"

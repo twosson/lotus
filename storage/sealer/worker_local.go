@@ -3,6 +3,10 @@ package sealer
 import (
 	"context"
 	"encoding/json"
+	"github.com/elastic/go-sysinfo"
+	"github.com/filecoin-project/go-statestore"
+	"github.com/hashicorp/go-multierror"
+	"github.com/ipfs/go-cid"
 	"io"
 	"os"
 	"reflect"
