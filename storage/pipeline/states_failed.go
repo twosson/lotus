@@ -2,6 +2,9 @@ package sealing
 
 import (
 	"context"
+	"github.com/filecoin-project/go-address"
+	"github.com/filecoin-project/go-statemachine"
+	"github.com/hashicorp/go-multierror"
 	"time"
 
 	"golang.org/x/xerrors"
