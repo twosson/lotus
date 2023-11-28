@@ -5,6 +5,8 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"github.com/filecoin-project/go-statemachine"
+	"github.com/ipfs/go-cid"
 	"io"
 	"net/http"
 	"strings"
