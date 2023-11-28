@@ -11,17 +11,12 @@ import (
 	"sync/atomic"
 	"time"
 
-	"github.com/elastic/go-sysinfo"
 	"github.com/google/uuid"
-	"github.com/hashicorp/go-multierror"
-	"github.com/ipfs/go-cid"
 	"golang.org/x/xerrors"
 
 	ffi "github.com/filecoin-project/filecoin-ffi"
 	"github.com/filecoin-project/go-state-types/abi"
 	"github.com/filecoin-project/go-state-types/proof"
-	"github.com/filecoin-project/go-statestore"
-
 	"github.com/filecoin-project/lotus/storage/paths"
 	"github.com/filecoin-project/lotus/storage/sealer/ffiwrapper"
 	"github.com/filecoin-project/lotus/storage/sealer/sealtasks"
@@ -518,10 +513,14 @@ func (l *LocalWorker) ReleaseUnsealed(ctx context.Context, sector storiface.Sect
 			return nil, xerrors.Errorf("finalizing sector: %w", err)
 		}
 
-		if len(keepUnsealed) == 0 {
-			if err := l.storage.Remove(ctx, sector.ID, storiface.FTUnsealed, true, nil); err != nil {
-				return nil, xerrors.Errorf("removing unsealed data: %w", err)
-			}
+		//if len(keepUnsealed) == 0 {
+		//	if err := l.storage.Remove(ctx, sector.ID, storiface.FTUnsealed, true, nil); err != nil {
+		//		return nil, xerrors.Errorf("removing unsealed data: %w", err)
+		//	}
+		//}
+
+		if err := l.storage.Remove(ctx, sector.ID, storiface.FTUnsealed, true, nil); err != nil {
+			return nil, xerrors.Errorf("removing unsealed data: %w", err)
 		}
 
 		return nil, err

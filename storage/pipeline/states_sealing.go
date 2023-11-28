@@ -7,9 +7,9 @@ import (
 	"errors"
 	"io"
 	"net/http"
+	"strings"
 	"time"
 
-	"github.com/ipfs/go-cid"
 	"golang.org/x/xerrors"
 
 	"github.com/filecoin-project/go-commp-utils/zerocomm"
@@ -21,8 +21,6 @@ import (
 	"github.com/filecoin-project/go-state-types/exitcode"
 	"github.com/filecoin-project/go-state-types/network"
 	"github.com/filecoin-project/go-state-types/proof"
-	"github.com/filecoin-project/go-statemachine"
-
 	"github.com/filecoin-project/lotus/api"
 	"github.com/filecoin-project/lotus/build"
 	"github.com/filecoin-project/lotus/chain/actors/builtin/miner"
@@ -636,7 +634,11 @@ func (m *Sealing) handleCommitting(ctx statemachine.Context, sector SectorInfo) 
 
 		porepProof, err = m.sealer.SealCommit2(sector.sealingCtx(ctx.Context()), m.minerSector(sector.SectorType, sector.SectorNumber), c2in)
 		if err != nil {
-			log.Errorw("Commit2 error", "error", err)
+			//log.Errorw("Commit2 error", "error", err)
+			if strings.Contains(err.Error(), "remote c2") {
+				log.Errorf("SectorC2RemoteFailed....")
+				return ctx.Send(SectorC2RemoteFailed{})
+			}
 			return ctx.Send(SectorComputeProofFailed{xerrors.Errorf("computing seal proof failed(2): %w", err)})
 		}
 	} else {

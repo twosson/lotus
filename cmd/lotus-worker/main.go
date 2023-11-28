@@ -15,17 +15,12 @@ import (
 	"github.com/google/uuid"
 	"github.com/ipfs/go-datastore/namespace"
 	logging "github.com/ipfs/go-log/v2"
-	"github.com/multiformats/go-multiaddr"
 	manet "github.com/multiformats/go-multiaddr/net"
-	"github.com/urfave/cli/v2"
 	"go.opencensus.io/stats/view"
 	"go.opencensus.io/tag"
 	"golang.org/x/xerrors"
 
 	"github.com/filecoin-project/go-jsonrpc/auth"
-	"github.com/filecoin-project/go-paramfetch"
-	"github.com/filecoin-project/go-statestore"
-
 	"github.com/filecoin-project/lotus/api"
 	"github.com/filecoin-project/lotus/build"
 	lcli "github.com/filecoin-project/lotus/cli"
@@ -283,6 +278,11 @@ var runCmd = &cli.Command{
 			Value:       true,
 			DefaultText: "inherits --addpiece",
 		},
+		&cli.BoolFlag{
+			Name:  "remote-c2",
+			Usage: "remote c2",
+			Value: false,
+		},
 	},
 	Before: func(cctx *cli.Context) error {
 		if cctx.IsSet("address") {
@@ -471,9 +471,13 @@ var runCmd = &cli.Command{
 			}
 		}
 
+		remoteC2 := cctx.Bool("remote-c2")
+
 		if needParams {
-			if err := paramfetch.GetParams(ctx, build.ParametersJSON(), build.SrsJSON(), uint64(ssize)); err != nil {
-				return xerrors.Errorf("get params: %w", err)
+			if !remoteC2 {
+				if err := paramfetch.GetParams(ctx, build.ParametersJSON(), build.SrsJSON(), uint64(ssize)); err != nil {
+					return xerrors.Errorf("get params: %w", err)
+				}
 			}
 		}
 

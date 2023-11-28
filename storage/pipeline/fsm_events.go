@@ -3,7 +3,6 @@ package sealing
 import (
 	"time"
 
-	"github.com/ipfs/go-cid"
 	"golang.org/x/xerrors"
 
 	"github.com/filecoin-project/go-state-types/abi"
@@ -565,3 +564,13 @@ func (evt SectorReceive) apply(state *SectorInfo) {
 type SectorReceived struct{}
 
 func (evt SectorReceived) apply(state *SectorInfo) {}
+
+type SectorC2RemoteFailed struct{ error }
+
+func (evt SectorC2RemoteFailed) FormatError(xerrors.Printer) (next error) { return evt.error }
+
+func (evt SectorC2RemoteFailed) apply(*SectorInfo) {}
+
+type SectorRetryC2Remote struct{}
+
+func (evt SectorRetryC2Remote) apply(state *SectorInfo) {}
